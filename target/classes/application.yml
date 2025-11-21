@@ -18,3 +18,6 @@ spring:
       path: /api-docs
     swagger-ui:
       path: /swagger-ui.html
+logging:
+  level:
+    com.github.alef_torres: DEBUG
