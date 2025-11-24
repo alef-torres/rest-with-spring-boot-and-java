@@ -1,10 +1,12 @@
 package com.github.alef_torres.data.dto.v2;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-
+@JsonPropertyOrder({"id", "gender", "birthDate", "address", "firstName", "lastName"})
 public class PersonDTOV2 implements Serializable {
 
     private static final long serialVersionUID = 1L;

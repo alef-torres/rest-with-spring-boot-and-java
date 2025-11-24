@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/api/person/v1")
 @Tag(name = "People", description = "Endpoints for Managing People")
 public class PersonController {
 
@@ -22,7 +23,11 @@ public class PersonController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Finds a Person", description = "Finds a Person", tags = {"People"})
     public PersonDTOV1 findById(@PathVariable("id") Long id) {
-        return personServices.findByID(id);
+        var person = personServices.findByID(id);
+        person.setBirthDate(new Date());
+        person.setPhone("99-999999999");
+        person.setSensitiveData("sensitive");
+        return person;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
