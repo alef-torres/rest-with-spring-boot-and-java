@@ -13,10 +13,14 @@ public class ObjectMapperConfig {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider()
+        SimpleFilterProvider filterProviderPerson = new SimpleFilterProvider()
                 .addFilter("PersonFilter", SimpleBeanPropertyFilter.serializeAllExcept(
                         "sensitiveData"));
-        objectMapper.setFilters(filterProvider);
+        SimpleFilterProvider filterProviderBook = new SimpleFilterProvider()
+                .addFilter("BookFilter", SimpleBeanPropertyFilter.serializeAllExcept(
+                        "sensitiveData"));
+        objectMapper.setFilters(filterProviderPerson);
         return objectMapper;
     }
 }
+

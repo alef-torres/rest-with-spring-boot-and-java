@@ -1,0 +1,100 @@
+package com.github.alef_torres.controllers.docs;
+
+import com.github.alef_torres.data.dto.v1.BookDTOV1;
+import com.github.alef_torres.data.dto.v1.PersonDTOV1;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+public interface BookControllerDocs {
+    @Operation(
+            summary = "Finds a Book",
+            description = "Finds Book",
+            tags = {"Books"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = {
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = BookDTOV1.class))}),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<BookDTOV1> findById(@PathVariable Long id);
+
+    @Operation(
+            summary = "Finds all Books",
+            description = "Finds all Books",
+            tags = {"Books"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = {
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = BookDTOV1.class))}),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<List<BookDTOV1>> findAll();
+
+    @Operation(
+            summary = "Create a new Book",
+            description = "Create a Book",
+            tags = {"Books"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = {
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = BookDTOV1.class))}),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<BookDTOV1> create(@RequestBody BookDTOV1 bookDTO);
+
+    @Operation(
+            summary = "Update a Book",
+            description = "Update a Book",
+            tags = {"Books"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = {
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = BookDTOV1.class))}),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<BookDTOV1> update(@RequestBody BookDTOV1 bookDTO);
+
+    @Operation(
+            summary = "Delete a Book",
+            description = "Delete Book",
+            tags = {"Books"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = {
+                            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = BookDTOV1.class))}),
+                    @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<BookDTOV1> delete(@PathVariable long id);
+}

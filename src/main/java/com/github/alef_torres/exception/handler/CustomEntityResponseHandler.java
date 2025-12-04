@@ -1,6 +1,7 @@
 package com.github.alef_torres.exception.handler;
 
 import com.github.alef_torres.exception.ExceptionResponse;
+import com.github.alef_torres.exception.RequiredObjectIsNullException;
 import com.github.alef_torres.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,5 +27,11 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
     public final ResponseEntity<ExceptionResponse> handleNotFoundException(Exception ex, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {RequiredObjectIsNullException.class})
+    public final ResponseEntity<ExceptionResponse> handleBadRequestException(Exception ex, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

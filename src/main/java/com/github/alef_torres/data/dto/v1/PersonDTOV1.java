@@ -3,6 +3,7 @@ package com.github.alef_torres.data.dto.v1;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.alef_torres.serializer.GenderSerializer;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -10,9 +11,7 @@ import java.util.Objects;
 
 @JsonPropertyOrder({"id", "gender", "lastName", "address", "firstName",})
 @JsonFilter("PersonFilter")
-public class PersonDTOV1 implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Serializable {
 
     @JsonProperty("person_id")
     private Long id;
