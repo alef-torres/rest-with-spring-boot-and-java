@@ -17,9 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -33,6 +39,9 @@ public class PersonServices {
     @Autowired
     private PersonMapper personMapper;
 
+    @Autowired
+    private PagedResourcesAssembler<PersonDTOV1>  pagedResourcesAssembler;
+
     private final Logger logger = LoggerFactory.getLogger(PersonServices.class.getName());
 
     @Transactional
@@ -45,11 +54,20 @@ public class PersonServices {
     }
 
     @Transactional
-    public List<PersonDTOV1> findAll() {
-        logger.info("Finding all people");
-        var lista = ObjectMapper.parseListObjects(personRepository.findAll(), PersonDTOV1.class);
-        lista.forEach(PersonServices::addHateoasLinks);
-        return lista;
+    public PagedModel<EntityModel<PersonDTOV1>> findAll(Pageable pageable) {
+        var people = personRepository.findAll(pageable);
+        Page<PersonDTOV1> peopleWithLinks = people.map(person -> {
+            var dto = ObjectMapper.parseObject(person, PersonDTOV1.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+        Link findAllLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PersonController.class).findAll(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                String.valueOf(pageable.getSort())
+                )).withSelfRel();
+        logger.info("Finding all people with params");
+        return pagedResourcesAssembler.toModel(peopleWithLinks, findAllLink);
     }
 
     @Transactional
@@ -95,11 +113,23 @@ public class PersonServices {
         logger.info("Deleting one person.");
     }
 
+    @Transactional
+    public PersonDTOV1 disablePerson(Long id) {
+        personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Person not found"));
+        logger.info("Disabling Person id {}.", id);
+        personRepository.disablePerson(id);
+        var entity = personRepository.findById(id).get();
+        var dto = ObjectMapper.parseObject(entity, PersonDTOV1.class);
+        addHateoasLinks(dto);
+        return dto;
+    }
+
     private static void addHateoasLinks(PersonDTOV1 dto) {
         dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withSelfRel().withType("GET"));
-        dto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("collection").withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).findAll(1,12, "asc")).withRel("collection").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("PUT"));
+        dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("disable").withType("PATCH"));
     }
 }

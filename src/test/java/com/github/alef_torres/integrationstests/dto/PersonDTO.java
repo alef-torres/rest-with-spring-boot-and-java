@@ -1,19 +1,16 @@
-package com.github.alef_torres.data.dto.v1;
+package com.github.alef_torres.integrationstests.dto;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.github.alef_torres.serializer.GenderSerializer;
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-@Relation(collectionRelation = "people")
-@JsonPropertyOrder({"id", "firstName", "lastName", "gender", "address", "birthDate", "enabled", "links"})
+@JsonPropertyOrder({"id", "gender", "lastName", "address", "firstName",})
 @JsonFilter("PersonFilter")
-public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Serializable {
+public class PersonDTO implements Serializable {
 
     @JsonProperty("person_id")
     private Long id;
@@ -25,7 +22,6 @@ public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Ser
     @JsonProperty("person_last_name")
     private String lastName;
 
-    @JsonProperty("person_birthDate")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date birthDate;
 
@@ -40,12 +36,12 @@ public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Ser
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String phone;
 
+    private String sensitiveData;
+
     @JsonProperty("person_status")
     private Boolean enabled;
 
-    private String sensitiveData;
-
-    public PersonDTOV1() {
+    public PersonDTO() {
     }
 
     public Boolean getEnabled() {
@@ -123,13 +119,12 @@ public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Ser
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        PersonDTOV1 that = (PersonDTOV1) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getFirstName(), that.getFirstName()) && Objects.equals(getLastName(), that.getLastName()) && Objects.equals(getBirthDate(), that.getBirthDate()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getGender(), that.getGender()) && Objects.equals(getPhone(), that.getPhone()) && Objects.equals(getEnabled(), that.getEnabled()) && Objects.equals(getSensitiveData(), that.getSensitiveData());
+        PersonDTO personDTO = (PersonDTO) o;
+        return Objects.equals(getId(), personDTO.getId()) && Objects.equals(getFirstName(), personDTO.getFirstName()) && Objects.equals(getLastName(), personDTO.getLastName()) && Objects.equals(getBirthDate(), personDTO.getBirthDate()) && Objects.equals(getAddress(), personDTO.getAddress()) && Objects.equals(getGender(), personDTO.getGender()) && Objects.equals(getPhone(), personDTO.getPhone()) && Objects.equals(getSensitiveData(), personDTO.getSensitiveData()) && Objects.equals(getEnabled(), personDTO.getEnabled());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getId(), getFirstName(), getLastName(), getBirthDate(), getAddress(), getGender(), getPhone(), getEnabled(), getSensitiveData());
+        return Objects.hash(getId(), getFirstName(), getLastName(), getBirthDate(), getAddress(), getGender(), getPhone(), getSensitiveData(), getEnabled());
     }
 }

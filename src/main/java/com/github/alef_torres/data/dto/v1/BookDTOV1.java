@@ -2,11 +2,13 @@ package com.github.alef_torres.data.dto.v1;
 
 import com.fasterxml.jackson.annotation.*;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+@Relation(collectionRelation = "books")
 @JsonPropertyOrder({"id", "title", "author", "launch_date", "price"})
 public class BookDTOV1 extends RepresentationModel<BookDTOV1> implements Serializable {
 
