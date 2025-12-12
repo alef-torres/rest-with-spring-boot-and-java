@@ -6,7 +6,6 @@ import com.github.alef_torres.data.dto.v2.PersonDTOV2;
 import com.github.alef_torres.services.PersonServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,8 +15,10 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 //@CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -44,7 +45,7 @@ public class PersonController implements PersonControllerDocs {
 
     @RequestMapping(method = RequestMethod.GET,
             produces = {
-                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
             })
     @Override
     public ResponseEntity<PagedModel<EntityModel<PersonDTOV1>>> findAll(
@@ -53,11 +54,25 @@ public class PersonController implements PersonControllerDocs {
             @RequestParam(value = "direction", defaultValue = "asc") String direction
     ) {
         var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
-        Pageable Pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
+        Pageable Pageable = PageRequest.of(page, size, Sort.by(sortDirection, "id"));
         return ResponseEntity.ok(personServices.findAll(Pageable));
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
+    @GetMapping(value = "/findPeopleByName/{firstName}", produces = {
+            MediaType.APPLICATION_JSON_VALUE
+    })
+    @Override
+    public ResponseEntity<PagedModel<EntityModel<PersonDTOV1>>> findByName(
+            @PathVariable("firstName") String firstName,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "12") Integer size,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction
+    ) {
+        var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
+        return ResponseEntity.ok(personServices.findByName(firstName, pageable));
+    }
+
     @RequestMapping(method = RequestMethod.POST,
             produces = {
                     MediaType.APPLICATION_JSON_VALUE,
@@ -66,6 +81,17 @@ public class PersonController implements PersonControllerDocs {
     @Override
     public ResponseEntity<PersonDTOV1> create(@RequestBody PersonDTOV1 personDTOV1) {
         return ResponseEntity.ok(personServices.create(personDTOV1));
+    }
+
+    @RequestMapping(value = "/massCreation",
+            method = RequestMethod.POST,
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            })
+    @Override
+    public ResponseEntity<List<PersonDTOV1>> massCreation(@RequestParam("file") MultipartFile file) throws Exception {
+        return ResponseEntity.ok(personServices.massCreation(file));
     }
 
     @RequestMapping(value = "/v2", method = RequestMethod.POST,

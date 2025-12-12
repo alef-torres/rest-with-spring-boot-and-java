@@ -1,12 +1,19 @@
 server:
   port: 8888
+
 cors:
   originPatterns: http://localhost:8080, http://localhost:3000
+
+file:
+  upload-dir: C:/ProjetoCursoJava
+
 spring:
   application:
     name: rest_with_spring_boot_and_java
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -14,9 +21,18 @@ spring:
       hibernate:
     show-sql: false
     open-in-view: false
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
 logging:
   level:
     com.github.alef_torres: DEBUG
+
 spring-doc:
   paths-to-match: /api/**/v1/**
   swagger-ui:
