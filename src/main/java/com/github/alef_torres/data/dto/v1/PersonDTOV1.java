@@ -2,12 +2,14 @@ package com.github.alef_torres.data.dto.v1;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.alef_torres.model.Book;
 import com.github.alef_torres.serializer.GenderSerializer;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Relation(collectionRelation = "people")
@@ -44,6 +46,13 @@ public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Ser
     private Boolean enabled;
 
     private String sensitiveData;
+
+    private String profileUrl;
+
+    private String photoUrl;
+
+    @JsonIgnore
+    private List<Book> books;
 
     public PersonDTOV1() {
     }
@@ -120,16 +129,45 @@ public class PersonDTOV1 extends RepresentationModel<PersonDTOV1> implements Ser
         this.phone = phone;
     }
 
+    @JsonIgnore
+    public String getName() {
+        return (firstName != null ? firstName : "") + (lastName != null ? " " + lastName : "");
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         PersonDTOV1 that = (PersonDTOV1) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getFirstName(), that.getFirstName()) && Objects.equals(getLastName(), that.getLastName()) && Objects.equals(getBirthDate(), that.getBirthDate()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getGender(), that.getGender()) && Objects.equals(getPhone(), that.getPhone()) && Objects.equals(getEnabled(), that.getEnabled()) && Objects.equals(getSensitiveData(), that.getSensitiveData());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getFirstName(), that.getFirstName()) && Objects.equals(getLastName(), that.getLastName()) && Objects.equals(getBirthDate(), that.getBirthDate()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getGender(), that.getGender()) && Objects.equals(getPhone(), that.getPhone()) && Objects.equals(getEnabled(), that.getEnabled()) && Objects.equals(getSensitiveData(), that.getSensitiveData()) && Objects.equals(getProfileUrl(), that.getProfileUrl()) && Objects.equals(getPhotoUrl(), that.getPhotoUrl()) && Objects.equals(getBooks(), that.getBooks());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getId(), getFirstName(), getLastName(), getBirthDate(), getAddress(), getGender(), getPhone(), getEnabled(), getSensitiveData());
+        return Objects.hash(super.hashCode(), getId(), getFirstName(), getLastName(), getBirthDate(), getAddress(), getGender(), getPhone(), getEnabled(), getSensitiveData(), getProfileUrl(), getPhotoUrl(), getBooks());
     }
 }

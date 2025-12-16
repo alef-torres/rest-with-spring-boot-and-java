@@ -38,4 +38,5 @@ springdoc:
 
 logging:
   level:
-    com.github.alef_torres: DEBUG
+    root: INFO
+    import net.sf.jasperreports.engine.*: TRACE

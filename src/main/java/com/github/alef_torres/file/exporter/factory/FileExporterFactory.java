@@ -4,6 +4,7 @@ package com.github.alef_torres.file.exporter.factory;
 import com.github.alef_torres.exception.BadRequestException;
 import com.github.alef_torres.file.exporter.contract.FileExporter;
 import com.github.alef_torres.file.exporter.impl.CsvExporter;
+import com.github.alef_torres.file.exporter.impl.PdfExporter;
 import com.github.alef_torres.file.exporter.impl.XlsxExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class FileExporterFactory {
     @Autowired
     private ApplicationContext applicationContext;
 
-    public FileExporter getImporter(String acceptHeader) throws Exception {
+    public FileExporter getExporter(String acceptHeader) throws Exception {
         if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {
             logger.info("Loading XLSX file");
             return applicationContext.getBean(XlsxExporter.class);
@@ -29,7 +30,11 @@ public class FileExporterFactory {
         if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_XLSX_VALUE)) {
             logger.info("Loading CSV file");
             return applicationContext.getBean(CsvExporter.class);
-            //return new CsvImporter();
+        }
+
+        if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_PDF_VALUE)) {
+            logger.info("Loading PDF file");
+            return applicationContext.getBean(PdfExporter.class);
         }
 
         throw new BadRequestException("Invalid file format");

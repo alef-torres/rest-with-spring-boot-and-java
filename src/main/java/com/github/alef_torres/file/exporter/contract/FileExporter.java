@@ -9,4 +9,6 @@ import java.util.List;
 public interface FileExporter {
 
     Resource exportFile(List<PersonDTOV1> people) throws Exception;
+
+    Resource exportPerson(PersonDTOV1 person) throws Exception;
 }

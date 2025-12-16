@@ -7,6 +7,8 @@ import com.github.alef_torres.exception.BadRequestException;
 import com.github.alef_torres.exception.FileStorageException;
 import com.github.alef_torres.exception.RequiredObjectIsNullException;
 import com.github.alef_torres.exception.ResourceNotFoundException;
+import com.github.alef_torres.file.exporter.contract.FileExporter;
+import com.github.alef_torres.file.exporter.factory.FileExporterFactory;
 import com.github.alef_torres.file.importer.contract.FileImporter;
 import com.github.alef_torres.file.importer.factory.FileImporterFactory;
 import com.github.alef_torres.mapper.custom.PersonMapper;
@@ -21,6 +23,7 @@ import static com.github.alef_torres.mapper.ObjectMapper.parseObject;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -48,6 +51,9 @@ public class PersonServices {
     private FileImporterFactory fileImporterFactory;
 
     @Autowired
+    private FileExporterFactory  fileExporterFactory;
+
+    @Autowired
     private PagedResourcesAssembler<PersonDTOV1> pagedResourcesAssembler;
 
     private final Logger logger = LoggerFactory.getLogger(PersonServices.class.getName());
@@ -59,6 +65,27 @@ public class PersonServices {
         var dto = parseObject(person, PersonDTOV1.class);
         addHateoasLinks(dto);
         return dto;
+    }
+
+    @Transactional
+    public Resource exportPerson(Long id, String acceptHeader) throws Exception {
+        Person person = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Person not found"));
+        logger.info("Exporting a data of one person!");
+        var dto = parseObject(person, PersonDTOV1.class);
+        FileExporter exporter = this.fileExporterFactory.getExporter(acceptHeader);
+        return exporter.exportPerson(dto);
+    }
+
+    @Transactional
+    public Resource exportPage(Pageable pageable, String acceptHeader) {
+        var people = personRepository.findAll(pageable).map(p -> parseObject(p, PersonDTOV1.class)).getContent();
+        logger.info("Exporting a people page");
+        try {
+            FileExporter exporter = this.fileExporterFactory.getExporter(acceptHeader);
+            return exporter.exportFile(people);
+        } catch (Exception e) {
+            throw new RuntimeException("Error exporting people page", e);
+        }
     }
 
     @Transactional
@@ -159,6 +186,7 @@ public class PersonServices {
         dto.add(linkTo(methodOn(PersonController.class).findAll(1, 12, "asc")).withRel("collection").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).findByName("", 1, 12, "asc")).withRel("collection").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
+        dto.add(linkTo(methodOn(PersonController.class).exportPage(1, 12, "asc", null)).withRel("exportPage").withType("GET").withTitle("Export").withSelfRel());
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
         dto.add(linkTo(methodOn(PersonController.class)).slash("massCreation").withRel("massCreation").withType("POST"));
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("PUT"));
