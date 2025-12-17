@@ -4,6 +4,10 @@ cors:
 file:
   upload-dir: C:/ProjetoCursoJava
 
+email:
+  subject: "Default Subject"
+  message: "Default Message"
+
 spring:
   application:
     name: rest_with_spring_boot_and_java
@@ -21,6 +25,16 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: alefstrogulski@gmail.com
+    password: dpxe kzhp avga qyaj
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
 
   servlet:
     multipart:
