@@ -2,7 +2,7 @@
 package com.github.alef_torres.file.exporter.factory;
 
 import com.github.alef_torres.exception.BadRequestException;
-import com.github.alef_torres.file.exporter.contract.FileExporter;
+import com.github.alef_torres.file.exporter.contract.PersonExporter;
 import com.github.alef_torres.file.exporter.impl.CsvExporter;
 import com.github.alef_torres.file.exporter.impl.PdfExporter;
 import com.github.alef_torres.file.exporter.impl.XlsxExporter;
@@ -20,7 +20,7 @@ public class FileExporterFactory {
     @Autowired
     private ApplicationContext applicationContext;
 
-    public FileExporter getExporter(String acceptHeader) throws Exception {
+    public PersonExporter getExporter(String acceptHeader) throws Exception {
         if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {
             logger.info("Loading XLSX file");
             return applicationContext.getBean(XlsxExporter.class);

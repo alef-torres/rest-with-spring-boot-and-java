@@ -1,7 +1,7 @@
 package com.github.alef_torres.file.exporter.impl;
 
 import com.github.alef_torres.data.dto.v1.PersonDTOV1;
-import com.github.alef_torres.file.exporter.contract.FileExporter;
+import com.github.alef_torres.file.exporter.contract.PersonExporter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
@@ -12,9 +12,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @Component
-public class XlsxExporter implements FileExporter {
+public class XlsxExporter implements PersonExporter {
     @Override
-    public Resource exportFile(List<PersonDTOV1> people) throws Exception {
+    public Resource exportPeople(List<PersonDTOV1> people) throws Exception {
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("People");

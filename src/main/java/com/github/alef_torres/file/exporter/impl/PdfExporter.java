@@ -1,7 +1,7 @@
 package com.github.alef_torres.file.exporter.impl;
 
 import com.github.alef_torres.data.dto.v1.PersonDTOV1;
-import com.github.alef_torres.file.exporter.contract.FileExporter;
+import com.github.alef_torres.file.exporter.contract.PersonExporter;
 import com.github.alef_torres.services.QRCodeService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -14,13 +14,13 @@ import java.io.*;
 import java.util.*;
 
 @Component
-public class PdfExporter implements FileExporter {
+public class PdfExporter implements PersonExporter {
 
     @Autowired
     private QRCodeService service;
 
     @Override
-    public Resource exportFile(List<PersonDTOV1> people) throws Exception {
+    public Resource exportPeople(List<PersonDTOV1> people) throws Exception {
         InputStream inputStream = getClass().getResourceAsStream("/templates/people.jrxml");
         if (inputStream == null) {
             throw new RuntimeException("Template file not found: 'templates/people.jrxml'");
@@ -58,12 +58,9 @@ public class PdfExporter implements FileExporter {
 
         JRBeanCollectionDataSource subReportDataSource = new JRBeanCollectionDataSource(person.getBooks());
 
-        String path = getClass().getResource("/templates/books.jasper").getPath();
-
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("SUB_REPORT_DATA_SOURCE", subReportDataSource);
         parameters.put("BOOK_SUB_REPORT", subReport);
-        parameters.put("SUB_REPORT_DIR", path);
         parameters.put("QR_CODEIMAGE", qrCodeStream);
 
         JRBeanCollectionDataSource mainDataSource = new JRBeanCollectionDataSource(Collections.singletonList(person));

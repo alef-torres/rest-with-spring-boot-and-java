@@ -19,8 +19,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -89,7 +87,7 @@ public class BookServices {
         bookUpdate.setAuthor(book.getAuthor());
         bookUpdate.setTitle(book.getTitle());
         bookUpdate.setPrice(book.getPrice());
-        bookUpdate.setLaunch_date(book.getLaunch_date());
+        bookUpdate.setLaunchDate(book.getLaunch_date());
         bookRepository.save(bookUpdate);
     }
 

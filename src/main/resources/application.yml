@@ -39,4 +39,3 @@ springdoc:
 logging:
   level:
     root: INFO
-    import net.sf.jasperreports.engine.*: TRACE

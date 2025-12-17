@@ -7,7 +7,7 @@ import com.github.alef_torres.exception.BadRequestException;
 import com.github.alef_torres.exception.FileStorageException;
 import com.github.alef_torres.exception.RequiredObjectIsNullException;
 import com.github.alef_torres.exception.ResourceNotFoundException;
-import com.github.alef_torres.file.exporter.contract.FileExporter;
+import com.github.alef_torres.file.exporter.contract.PersonExporter;
 import com.github.alef_torres.file.exporter.factory.FileExporterFactory;
 import com.github.alef_torres.file.importer.contract.FileImporter;
 import com.github.alef_torres.file.importer.factory.FileImporterFactory;
@@ -72,7 +72,7 @@ public class PersonServices {
         Person person = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Person not found"));
         logger.info("Exporting a data of one person!");
         var dto = parseObject(person, PersonDTOV1.class);
-        FileExporter exporter = this.fileExporterFactory.getExporter(acceptHeader);
+        PersonExporter exporter = this.fileExporterFactory.getExporter(acceptHeader);
         return exporter.exportPerson(dto);
     }
 
@@ -81,8 +81,8 @@ public class PersonServices {
         var people = personRepository.findAll(pageable).map(p -> parseObject(p, PersonDTOV1.class)).getContent();
         logger.info("Exporting a people page");
         try {
-            FileExporter exporter = this.fileExporterFactory.getExporter(acceptHeader);
-            return exporter.exportFile(people);
+            PersonExporter exporter = this.fileExporterFactory.getExporter(acceptHeader);
+            return exporter.exportPeople(people);
         } catch (Exception e) {
             throw new RuntimeException("Error exporting people page", e);
         }
